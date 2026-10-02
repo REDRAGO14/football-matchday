@@ -40,7 +40,7 @@ export const registerPlayerSchema: FastifySchema = {
         success: { type: 'boolean' },
         status: { type: 'string', enum: ['approved', 'waitlisted', 'rejected'] },
         message: { type: 'string' },
-        player: { type: 'object', nullable: true }
+        player: { type: 'object', nullable: true, additionalProperties: true }
       }
     },
     400: {
