@@ -2,17 +2,21 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import * as dotenv from 'dotenv';
 import { supabaseAdmin } from './lib/supabase.js';
+import { registrationRoutes } from './routes/registrationRoutes.js';
 
 dotenv.config();
 
 const fastify = Fastify({ logger: true });
 
+// Enable CORS for frontend integration
 fastify.register(cors, { origin: true });
 
-// Health check endpoint with Database connectivity test
+// Register API Routes
+fastify.register(registrationRoutes, { prefix: '/api/v1' });
+
+// Health Check Endpoint
 fastify.get('/health', async (request, reply) => {
   try {
-    // Quick test query to verify Supabase connectivity
     const { count, error } = await supabaseAdmin
       .from('profiles')
       .select('*', { count: 'exact', head: true });
