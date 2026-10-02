@@ -1,0 +1,33 @@
+import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import { RegistrationService } from '../services/registrationService.js';
+import { registerPlayerSchema } from '../schemas/registrationSchema.js';
+import type { RegisterPlayerDTO } from '../types/index.js';
+
+export async function registrationRoutes(
+  fastify: FastifyInstance,
+  options: FastifyPluginOptions
+) {
+  // POST /api/v1/register
+  fastify.post<{ Body: RegisterPlayerDTO }>(
+    '/register',
+    { schema: registerPlayerSchema },
+    async (request, reply) => {
+      try {
+        const payload = request.body;
+
+        // Execute core business logic via service layer
+        const result = await RegistrationService.registerPlayer(payload);
+
+        return reply.status(200).send(result);
+      } catch (error: any) {
+        fastify.log.error(error);
+        
+        return reply.status(500).send({
+          statusCode: 500,
+          error: 'Internal Server Error',
+          message: error.message || 'An unexpected database error occurred.'
+        });
+      }
+    }
+  );
+}
