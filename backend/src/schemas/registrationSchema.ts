@@ -53,3 +53,15 @@ export const registerPlayerSchema: FastifySchema = {
     }
   }
 };
+export const getSquadStatsSchema: FastifySchema = {
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        studentCount: { type: 'integer' },
+        staffCount: { type: 'integer' },
+        maxCap: { type: 'integer' }
+      }
+    }
+  }
+};
