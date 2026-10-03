@@ -68,7 +68,6 @@ export class RegistrationService {
       player: newPlayer,
     };
 }
-
   static async getSquadStats(): Promise<SquadStatsDTO> {
   const SQUAD_LIMIT = 18;
 
@@ -99,5 +98,22 @@ export class RegistrationService {
     maxCap: SQUAD_LIMIT,
   };
 }
+static async claimSpectatorPass(userId: string) {
+  const ticketCode = `PASS-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
+  const { data, error } = await supabaseAdmin
+    .from('spectators')
+    .insert({ user_id: userId, ticket_code: ticketCode })
+    .select()
+    .single();
+
+  if (error) {
+    if (error.code === '23505') {
+      return { success: false, message: 'You have already claimed your spectator match pass!' };
+    }
+    throw new Error(error.message);
+  }
+
+  return { success: true, message: 'Digital Match Pass claimed successfully!', pass: data };
+}
 }
