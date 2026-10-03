@@ -1,5 +1,6 @@
 import AuthButton from '@/components/AuthButton';
 import RegistrationForm from '@/components/RegistrationForm';
+import SquadCounter from '@/components/SquadCounter';
 
 export default function Home() {
   // Using our test UUID for local dev verification
@@ -15,6 +16,11 @@ export default function Home() {
           </div>
           <AuthButton />
         </header>
+        
+        {/* Live Squad Counter */}
+        <section>
+          <SquadCounter />
+        </section>
 
         <section className="mt-8">
           <RegistrationForm userId={testUserId} />
