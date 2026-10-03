@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import { RegistrationService } from '../services/registrationService.js';
-import { registerPlayerSchema } from '../schemas/registrationSchema.js';
 import type { RegisterPlayerDTO } from '../types/index.js';
+import { registerPlayerSchema, getSquadStatsSchema } from '../schemas/registrationSchema.js';
 
 export async function registrationRoutes(
   fastify: FastifyInstance,
@@ -30,4 +30,21 @@ export async function registrationRoutes(
       }
     }
   );
+  fastify.get(
+  '/squad-stats',
+  { schema: getSquadStatsSchema },
+  async (request, reply) => {
+    try {
+      const stats = await RegistrationService.getSquadStats();
+      return reply.status(200).send(stats);
+    } catch (error: any) {
+      fastify.log.error(error);
+      return reply.status(500).send({
+        statusCode: 500,
+        error: 'Internal Server Error',
+        message: error.message || 'Failed to retrieve squad statistics.'
+      });
+    }
+  }
+);
 }
