@@ -47,4 +47,16 @@ export async function registrationRoutes(
     }
   }
 );
+// POST /api/v1/spectator
+fastify.post<{ Body: { userId: string } }>('/spectator', async (request, reply) => {
+  try {
+    const { userId } = request.body;
+    if (!userId) return reply.status(400).send({ message: 'User ID required' });
+    
+    const result = await RegistrationService.claimSpectatorPass(userId);
+    return reply.status(200).send(result);
+  } catch (err: any) {
+    return reply.status(500).send({ message: err.message });
+  }
+});
 }
