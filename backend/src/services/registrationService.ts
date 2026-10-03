@@ -2,7 +2,11 @@ import { supabaseAdmin } from '../lib/supabase.js';
 import type { RegisterPlayerDTO, RegistrationResult } from '../types/index.js';
 
 const SQUAD_LIMIT = 18;
-
+export interface SquadStatsDTO {
+  studentCount: number;
+  staffCount: number;
+  maxCap: number;
+} 
 export class RegistrationService {
   /**
    * Registers a player for either Staff or Student team,
@@ -63,5 +67,37 @@ export class RegistrationService {
       message,
       player: newPlayer,
     };
+}
+
+  static async getSquadStats(): Promise<SquadStatsDTO> {
+  const SQUAD_LIMIT = 18;
+
+  // Run database queries concurrently for maximum efficiency
+  const [studentRes, staffRes] = await Promise.all([
+    supabaseAdmin
+      .from('players')
+      .select('*', { count: 'exact', head: true })
+      .eq('team', 'student')
+      .eq('status', 'approved'),
+    supabaseAdmin
+      .from('players')
+      .select('*', { count: 'exact', head: true })
+      .eq('team', 'staff')
+      .eq('status', 'approved'),
+  ]);
+
+  if (studentRes.error) {
+    throw new Error(`Failed to fetch student count: ${studentRes.error.message}`);
   }
+  if (staffRes.error) {
+    throw new Error(`Failed to fetch staff count: ${staffRes.error.message}`);
+  }
+
+  return {
+    studentCount: studentRes.count ?? 0,
+    staffCount: staffRes.count ?? 0,
+    maxCap: SQUAD_LIMIT,
+  };
+}
+
 }
