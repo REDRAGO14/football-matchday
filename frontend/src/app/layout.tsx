@@ -21,9 +21,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning // <-- ADD THIS PROP HERE
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="h-full bg-gray-50 text-gray-900">
+        {children}
+      </body>
     </html>
   );
 }
