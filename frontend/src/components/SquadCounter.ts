@@ -82,14 +82,11 @@ export default function SquadCounter() {
   if (loading) {
     return React.createElement(
       'div',
-      { className: 'w-full grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse' },
-      React.createElement('div', { className: 'h-28 bg-gray-200 rounded-xl' }),
-      React.createElement('div', { className: 'h-28 bg-gray-200 rounded-xl' })
+      { className: 'w-full grid grid-cols-1 md:grid-cols-2 gap-4' },
+      React.createElement('div', { className: 'p-5 bg-white border border-gray-100 rounded-xl shadow-sm' }, 'Loading squad stats…'),
+      React.createElement('div', { className: 'p-5 bg-white border border-gray-100 rounded-xl shadow-sm' }, 'Loading squad stats…')
     );
   }
-
-  const studentPct = getPercentage(stats.studentCount);
-  const staffPct = getPercentage(stats.staffCount);
 
   return React.createElement(
     'div',
@@ -99,16 +96,16 @@ export default function SquadCounter() {
       count: stats.studentCount,
       maxCap: stats.maxCap,
       badgeClass: 'bg-blue-50 text-blue-700',
-      fillClass: 'bg-blue-600',
-      percent: studentPct,
+      fillClass: 'bg-blue-500',
+      percent: getPercentage(stats.studentCount),
     }),
     React.createElement(StatCard, {
       title: 'Staff XI Squad',
       count: stats.staffCount,
       maxCap: stats.maxCap,
       badgeClass: 'bg-purple-50 text-purple-700',
-      fillClass: 'bg-purple-600',
-      percent: staffPct,
+      fillClass: 'bg-purple-500',
+      percent: getPercentage(stats.staffCount),
     })
   );
-}
+} 
