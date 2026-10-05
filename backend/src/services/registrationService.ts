@@ -116,4 +116,60 @@ static async claimSpectatorPass(userId: string) {
 
   return { success: true, message: 'Digital Match Pass claimed successfully!', pass: data };
 }
+
+static async getFullRosters() {
+  const { data, error } = await supabaseAdmin
+    .from('players')
+    .select(`
+      id,
+      user_id,
+      team,
+      position,
+      squad_number,
+      status,
+      created_at,
+      profiles (
+        email,
+        full_name
+      )
+    `)
+    .order('created_at', { ascending: true });
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+static async updatePlayerStatus(playerId: string, status: 'approved' | 'waitlisted' | 'rejected') {
+  const { data, error } = await supabaseAdmin
+    .from('players')
+    .update({ status })
+    .eq('id', playerId)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+static async verifyTicketCode(ticketCode: string) {
+  const { data, error } = await supabaseAdmin
+    .from('spectators')
+    .select(`
+      id,
+      ticket_code,
+      claimed_at,
+      profiles (
+        email,
+        full_name
+      )
+    `)
+    .eq('ticket_code', ticketCode)
+    .single();
+
+  if (error || !data) {
+    return { valid: false, message: 'Invalid ticket code' };
+  }
+
+  return { valid: true, ticket: data };
+}
 }
